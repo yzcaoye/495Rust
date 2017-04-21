@@ -1,1 +1,1 @@
-# 495Rust
+Concurrent programming in Rust
