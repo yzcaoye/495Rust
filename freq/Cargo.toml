@@ -1,0 +1,6 @@
+[package]
+name = "freq"
+version = "0.1.0"
+authors = ["Tony Cao <yzcaoye@163.com>"]
+
+[dependencies]
