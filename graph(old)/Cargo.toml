@@ -1,6 +1,6 @@
 [package]
 name = "graph"
 version = "0.1.0"
-authors = ["sam456852 <weixiangzhang@u.northwestern.edu>"]
+authors = ["Tony Cao <yzcaoye@163.com>"]
 
 [dependencies]
