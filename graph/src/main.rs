@@ -27,7 +27,7 @@ fn find_path(graph: &Adjlist, start: String, end: String) -> Vec<String>{
     let mut path=Vec::new();
     path.push(start.clone());
     dfs(graph, start, end.clone(), &mut path);
-    if path.len()==graph.adj_list.len() && path[path.len()-1]!=end.clone(){
+    if path.len()==graph.node_num() && path[path.len()-1]!=end.clone(){
         return Vec::new();
     }
     else if path[path.len()-1] != end.clone() {
@@ -68,12 +68,12 @@ fn dfs(graph: &Adjlist, start: String, end: String, path: &mut Vec<String>){
     if start==end{
         return;
     }
-    if path.len()==graph.adj_list.len(){
+    if path.len()==graph.node_num(){
         return;
     }
 
     let mut vec = Vec::new();
-    match graph.adj_list.get(&start){
+    match graph.get_neighbors(&start){
         Some(v) => vec = v.clone(),
         None => println!("No such start node")
     }
@@ -141,17 +141,12 @@ mod graph_builder_tests {
         test.insert("d".to_string(), vec!["a".to_string(), "b".to_string(), "c".to_string()]);
         test.insert("c".to_string(), vec!["d".to_string()]);
         // assert_eq!(test, graph_builder("a b d\nb a d\nc\nd c\n".to_string()).adj_list);
-        assert_eq!(test.len(),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).adj_list.len());
-        assert_eq!(test.get(&String::from("a")),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).adj_list.get(&String::from("a")));
-        assert_eq!(test.get(&String::from("b")),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).adj_list.get(&String::from("b")));
-        assert_eq!(test.get(&String::from("c")),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).adj_list.get(&String::from("c")));
-        assert_eq!(test.get(&String::from("d")),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).adj_list.get(&String::from("d")));
+        assert_eq!(test.len(),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).node_num());
+        assert_eq!(test.get(&String::from("a")),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).get_neighbors(&String::from("a")));
+        assert_eq!(test.get(&String::from("b")),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).get_neighbors(&String::from("b")));
+        assert_eq!(test.get(&String::from("c")),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).get_neighbors(&String::from("c")));
+        assert_eq!(test.get(&String::from("d")),graph_builder("a b d\nb a d\nc\nd c\n".to_string()).get_neighbors(&String::from("d")));
 
-    }
-    #[test]
-    fn graph_builder_none_input_test() {
-        let test = HashMap::new();
-        assert_eq!(test, graph_builder(" ".to_string()).adj_list);
     }
 
 }

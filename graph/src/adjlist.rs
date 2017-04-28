@@ -3,7 +3,7 @@ use std::collections::HashMap;
 pub struct Adjlist{
     // use an adjacent list to represent graph
     // in the HashMap, key is the node, and Vec is his neighbors
-    pub adj_list: HashMap<String, Vec<String>>,
+    adj_list: HashMap<String, Vec<String>>,
 }
 
 impl Adjlist{
@@ -13,6 +13,13 @@ impl Adjlist{
         }
     }
 
+    pub fn get_neighbors(&self, start: &String) -> Option<&Vec<String>>{
+        self.adj_list.get(start)
+    }
+
+    pub fn node_num(&self) ->usize{
+        self.adj_list.len()
+    }
     // add an edge between two neighbors
     pub fn add_edge(&mut self, node1: String, node2: String){
 
