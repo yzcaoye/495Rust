@@ -1,9 +1,10 @@
-use std::collections::HashMap;
+use std::collections::HashSet;
+use std::collections::hash_map::{HashMap, Entry};
 #[derive(Debug)]
 pub struct Adjlist{
     // use an adjacent list to represent graph
     // in the HashMap, key is the node, and Vec is his neighbors
-    adj_list: HashMap<String, Vec<String>>,
+    adj_list: HashMap<String, HashSet<String>>,
 }
 
 impl Adjlist{
@@ -13,7 +14,7 @@ impl Adjlist{
         }
     }
 
-    pub fn get_neighbors(&self, start: &String) -> Option<&Vec<String>>{
+    pub fn get_neighbors(&self, start: &String) -> Option<&HashSet<String>>{
         self.adj_list.get(start)
     }
 
@@ -23,25 +24,28 @@ impl Adjlist{
     // add an edge between two neighbors
     pub fn add_edge(&mut self, node1: String, node2: String){
 
-        if self.adj_list.contains_key(&node1)==false{
-            let vec:Vec<String>=Vec::new();
-            self.adj_list.insert(node1.clone(),vec);
+        match self.adj_list.entry(node1.clone()) {
+            Entry::Occupied(mut entry) => {
+                entry.get_mut().insert(node2.clone());
+            },
+            Entry::Vacant(entry) => {
+                let mut set = HashSet::new();
+                set.insert(node2.clone());
+                entry.insert(set);
+            }
         }
-        if self.adj_list.contains_key(&node2)==false{
-            let vec:Vec<String>=Vec::new();
-            self.adj_list.insert(node2.clone(),vec);
-        }
-        let mut vec1 = self.adj_list.get(&node1).unwrap().to_owned();
-        if vec1.contains(&node2)==false{
-            vec1.push(node2.to_owned());
-        }
-        self.adj_list.insert(node1.to_owned(),vec1);
 
-        let mut vec2 = self.adj_list.get(&node2).unwrap().to_owned();
-        if vec2.contains(&node1)==false{
-            vec2.push(node1.to_owned());
+        match self.adj_list.entry(node2.clone()) {
+            Entry::Occupied(mut entry) => {
+                entry.get_mut().insert(node1.clone());
+            },
+            Entry::Vacant(entry) => {
+                let mut set = HashSet::new();
+                set.insert(node1.clone());
+                entry.insert(set);
+                //entry.insert(HashSet::new());
+            }
         }
-        self.adj_list.insert(node2.to_owned(),vec2);
     }
 
 

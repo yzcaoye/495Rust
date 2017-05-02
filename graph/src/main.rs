@@ -13,12 +13,13 @@ use graph::adjlist::*;
 use std::env;
 use std::fs::File;
 use std::io::{Read,stdin};
+use std::collections::HashSet;
 
 fn main() {
     //initialize graph
     let graph = graph_builder(readin_file());
     // print the adjacent list for the graph
-    //println!("{:?}", graph);
+    // println!("{:?}", graph);
     input_node(&graph);
 }
 
@@ -72,19 +73,19 @@ fn dfs(graph: &Adjlist, start: String, end: String, path: &mut Vec<String>){
         return;
     }
 
-    let mut vec = Vec::new();
+    let mut vec = HashSet::new();
     match graph.get_neighbors(&start){
         Some(v) => vec = v.clone(),
         None => println!("No such start node")
     }
-    for i in 0..vec.len(){
+    for i in vec.iter(){
         // if path.contains(&i)==false && ()
-        if path.contains(&vec[i].clone())==false{
-            path.push(vec[i].clone());
+        if path.contains(&i.to_owned())==false{
+            path.push(i.clone());
             // if vec[i]==end.to_owned(){
             //     return;
             // }
-            dfs(graph, vec[i].clone(), end.to_owned(), path);
+            dfs(graph, i.clone(), end.to_owned(), path);
         }
         if path[path.len()-1]==end.clone(){
             return;
@@ -119,7 +120,10 @@ fn graph_builder(lines: String) -> Adjlist{
         let mut iter = line.split_whitespace();
         let mut head = String::new();
         match iter.next(){
-            Some(h) => head = h.to_string(),
+            Some(h) => {
+                head = h.to_string();
+                graph.add_edge(head.clone(), head.clone());
+            },
             None =>{}
         }
         while let Some(next) = iter.next(){
@@ -170,7 +174,12 @@ fn input_node(graph: &Adjlist){
                 println!("Please Input two Nodes");
             }else{
                 let result = find_path(&graph, vec[0].to_string(), vec[1].to_string());
-                if result.len()<=1{
+                if result.len() == 1 {
+                    match graph.get_neighbors(&result[0]){
+                        Some(_) => println!("{} {}", result[0], result[0]),
+                        None => println!("No such path or node!")
+                    }
+                }else if result.len() == 0{
                     // no path, assume that when start node and end node are the same, there is no path
                     println!("No such path or node!");
                 }else{
